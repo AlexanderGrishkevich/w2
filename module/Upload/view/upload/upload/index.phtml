@@ -1,0 +1,55 @@
+<style>
+    .lol {
+        width: 50px;
+    }
+</style>
+<div id="content">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>User_id</th>
+                <th>filename</th>
+                <th>Image</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->uploads as $upload) { ?>
+                <tr>
+                    <td class="text"><?= $upload->id; ?></td>
+                    <td><?= $upload->user_id; ?></td>
+                    <td><?= $upload->filename; ?></td>
+                    <td>
+                        <div class="lol">
+                            <img class="lol" src="<?= $upload->filepath; ?>">
+                        </div>
+                    </td>
+                    <td class="delete" data-id="<?= $upload->id; ?>" 
+                       >Delete</td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    $(document).ready(function() {
+        $('.delete').on('click', function() {
+            var row = $(this).parent();
+            var id = $(this).parent().children('.delete').data("id");
+            $.ajax({
+                type: "POST",
+                url: "/upload/delete",
+                data: {"id": id},
+                cache: false,
+                success: function(response) {
+                    if (response && response.status === 'ok') {
+                        row.remove();
+                    }
+                }
+            });
+        });
+    });
+</script>

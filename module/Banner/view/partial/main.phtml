@@ -1,0 +1,14 @@
+<?php foreach ($this->banners as $key => $banner): ?>
+        <a href="<?= $this->url('post', array('action' => 'list', 'id' => $banner['id'])); ?>">
+            <div class="voice-count-block">
+                <div class="voice-count-label">Голосов доверия</div>
+                <div class="voice-count"><?= $banner['likes']; ?></div>
+            </div>
+            
+            <img src="<?= $banner['url']; ?>" alt="" width="810" height="380" >
+            
+            <div class="trust-label-block">
+                <div class="trust-label"><?= $banner['type']; ?></div>
+            </div>
+        </a>
+<?php endforeach; ?>

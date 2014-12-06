@@ -1,0 +1,57 @@
+<input type="text" class="unp-search" name="unp" placeholder="Поиск по unp">
+<input type="submit">
+
+<div>
+	<p>Резульаты поиска</p>
+	<div class="admin-user-results">
+	
+	</div>
+</div>
+
+<div class="admin-user-controls">
+	<input type="text" class="month-modify" name="month" placeholder="Кол-во месяцев">
+	<div id="up" class="go">Добавить</div>
+	<div id="down" class="go">Снять</div>
+	<div class="admin-user-controls-result"></div>
+</div>
+
+<script>
+	$(document).ready(function() {
+		$('input[type="submit"]').on('click', function() {
+			$.ajax({
+				type: 'post',
+				url: '/admin/user/search-user',
+				data: 'unp=' + $('.unp-search').val(),
+				success: function(response) {
+					$('.admin-user-results').empty();
+					if (response && response.id) {
+						$('.admin-user-results').append('<div class="admin-user-results-id">' + response.id + '</div>');
+                                                $('.admin-user-results').append('<div class="admin-user-results-email">' + response.email + '</div>');
+					}
+				}
+			});
+		});
+
+		$('.go').on('click', function(e) {
+			$.ajax({
+				type: 'post',
+				url: '/admin/user/activate-user',
+				data: {
+					time: $('.month-modify').val(),
+					action: e.currentTarget.id,
+					id: $('.admin-user-results-id').text()
+				},
+				success: function(response) {
+					if(response && response.status) {
+						if (response.status == 'ok') {
+							$('.admin-user-controls-result').text('Пользователь активирован');
+						} else {
+							$('.admin-user-controls-result').text('Что-то пошло не так');
+						}
+					}
+				}
+			});
+		});
+
+	})
+</script>

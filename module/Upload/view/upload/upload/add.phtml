@@ -1,0 +1,23 @@
+<div id="my-awesome-dropzone" style="width:500px;height:500px; background-color: #ccc;border:10px dotted #555; " ></div>
+<button id="do-it">Go</button>
+
+<?php $this->headScript()->appendFile($this->basePath() . '/js/dropzone.js', 'text/javascript'); ?>
+
+<script>
+    Dropzone.options.myAwesomeDropzone = {
+        paramName: "file",
+        parallelUploads: 6,
+        maxFilesize: 2,
+        autoProcessQueue: true,
+        uploadMultiple: false,
+        acceptedFiles: "image/*, ",
+        accept: function(file, done) {
+            done();
+        }
+    };
+    var myDropzone = new Dropzone("#my-awesome-dropzone", {url: "/upload/add"});
+
+    $('#do-it').on('click', function() {
+        myDropzone.processQueue();
+    })
+</script>

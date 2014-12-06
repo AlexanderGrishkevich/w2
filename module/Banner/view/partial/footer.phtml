@@ -1,0 +1,7 @@
+<?php foreach ($this->banners as $key => $banner): ?>
+    <li class="footer-banner-item footer-banner-item-<?= $key; ?>">
+        <a href="<?= $this->url('post', array('action' => 'list', 'id' => $banner['id'])) ?>">
+            <img src="<?= $banner['url']; ?>" alt="" width="145" height="35" >
+        </a>
+    </li>
+<?php endforeach; ?>

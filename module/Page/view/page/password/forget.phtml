@@ -1,0 +1,27 @@
+<?php
+	$form = $this->form;
+	$form->prepare();
+	$form->setAttribute('action', '/password/process-forget');
+	echo $this->form()->openTag($form);
+?>
+
+	<div class="forget-password-form-content">
+		<?= $this->formLabel($form->get('email')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('email')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('email')); ?></div>
+
+		<div class="form-error"><?= $this->no_user; ?></div>
+
+		<div class="form-input form-input-submit"><?= $this->formElement($form->get('submit')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('submit')); ?></div>	
+
+	</div>
+
+<?php echo $this->form()->closeTag() ?>
+
+<style> 
+    forget-password-form-content label {
+        width: 240px;
+    }
+    
+</style>

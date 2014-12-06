@@ -1,0 +1,34 @@
+<?php
+foreach ($this->dialogs as $dialog) {
+    if ($dialog->sender_id == $this->userId) {
+        $id = $dialog->recipient_id;
+        $avatar = $dialog->ravatar;
+        $name = $dialog->rfirst_name;
+        $class = 'send';
+    } else {
+        $id = $dialog->sender_id;
+        $avatar = $dialog->savatar;
+        $name = $dialog->sfirst_name;
+        $class = 'recipient';
+    }
+    ?>
+    <div class="dialog-item <?= $class ?> <?= $dialog->is_new ? 'new' : '' ?>">
+        <div class="dialog-item-delete">
+            <a href="/dialog/delete/<?= $id ?>">
+                <div class="delete-icon-dialog"></div>
+            </a>
+        </div>
+        <a href="/dialog/open/<?= $id ?>"><div class="dialog-item__content">
+            <div class="dialog-item__content-avatar" style="background-image: url(<?= $avatar ? $this->Thumb(substr($avatar, 6), 35, 35) : '/img/no-avatar.png' ?>)"></div>
+            <div class="dialog-item__content-middle">
+                <div class="dialog-item__content-middle-name"><?= $name ?></div>
+                <div class="dialog-item__content-middle-avatar" style="background-image: url(<?= $dialog->savatar ? $this->Thumb(substr($dialog->savatar, 6), 15, 15) : '/img/no-avatar.png' ?>)"></div>
+                <div class="dialog-item__content-middle-message"><?= $dialog->text ?></div>
+            </div>
+            <div class="dialog-item__content-date"><?= date_format(new DateTime($dialog->create_date), 'd.m.y H:i'); ?></div>
+        </div></a>
+    </div>
+<?php } ?>
+<?php if (!$this->dialogs->count()) { ?>
+    <div class="not-items">Нет сообщений</div>
+<?php } ?>

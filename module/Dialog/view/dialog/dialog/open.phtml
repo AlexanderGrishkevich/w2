@@ -1,0 +1,68 @@
+<?php
+$form = $this->dialogForm;
+$form->prepare();
+$form->setAttribute('action', $this->url(
+                'dialog', array(
+            'action' => 'open',
+            'id' => $this->secondUserId
+                )
+));
+?>
+<?php echo $this->form()->openTag($form); ?>
+<div class="chat-log">
+    <div class="chat-log-window">
+        <?php foreach ($this->dialogs as $dialog) { ?>
+            <div class="chat-item">
+                <a href="/post/list/<?= $dialog->sender_id ?>">
+                    <div class="dialog-avatar" style="background-image: url('<?php echo $dialog->avatar ? $this->Thumb(substr($dialog->avatar, 6), 37, 37) : '/img/no-avatar.png' ?>')"></div>
+                </a>
+                <div class="chat-item__middle">
+                    <a href="/post/list/<?= $dialog->sender_id ?>">
+                        <div class="chat-item__middle-name"><?= $dialog->first_name ?></div>
+                    </a>
+                    <div class="chat-item__middle-date"><?= $dialog->create_date ?></div>
+                    <div class="chat-item__middle-text"><?= $dialog->text ?></div>
+                </div>
+            </div>
+        <?php } ?>
+    </div>
+</div>
+<?php if (!$this->dialogs->count()) { ?>
+    <div class="not-items">С выбранным вами пользователем переписка не велась</div>
+<?php } ?>
+
+<div class="chat-control">
+    <?php echo $this->formElement($form->get('text')); ?>
+    <?php echo $this->formElementErrors($form->get('text')); ?>
+
+    <?php echo $this->formElement($form->get('submit')); ?>
+    <?php echo $this->formElementErrors($form->get('submit')); ?>
+</div>
+<?php echo $this->form()->closeTag() ?>
+
+<script>
+    $(document).ready(function() {
+        $(window).load(function() {
+            $(".chat-log-window").animate({scrollTop: $('.chat-item').size() * 61}, 0);
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

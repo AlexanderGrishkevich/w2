@@ -1,0 +1,71 @@
+<div class="simple-and-sale-banner">
+	<a href="<?= $this->url('banner', array('action' => 'add-sale'));?>">
+		<div class="sale-banner <?= $this->currentBanner['sale'] ? 'exists' : ''; ?>"></div>
+	</a>
+	<a href="<?= $this->url('banner', array('action' => 'add-simple'));?>">
+		<div class="simple-banner <?= $this->currentBanner['simple'] ? 'exists' : ''; ?>"></div>			
+	</a>
+</div>
+
+<div class="banner-description">
+        <h5 class="menu-banners">Меню Баннеров</h5>
+	<p class="simple-desc">
+		Баннер "стандарт"
+	</p>
+	<p class="sale-desc">
+		Баннер "скидка"
+	</p>
+	<p class="vip-desc">
+		Баннер "VIP"
+	</p>
+	<p class="footer-desc">
+		Баннер "логотип"
+	</p>
+</div>
+
+<a href="<?= $this->url('banner', array('action' => 'add-vip'));?>">
+	<div class="vip-banner <?= $this->currentBanner['vip'] ? 'exists' : ''; ?>"></div>			
+</a>	
+
+<a href="<?= $this->url('banner', array('action' => 'add-footer'));?>">
+	<div class="footer-banner <?= $this->currentBanner['footer'] ? 'exists' : ''; ?>"></div>			
+</a>	
+
+<script type="text/javascript">
+	$(document).ready(function() {
+
+        $('.simple-banner').on('mouseenter', function(e) {
+            $('.simple-desc').show();
+        });
+        $('.simple-banner').on('mouseleave', function(e) {
+            $('.simple-desc').hide();
+        });
+
+        $('.sale-banner').on('mouseenter', function(e) {
+            $('.sale-desc').show();
+        });
+        $('.sale-banner').on('mouseleave', function(e) {
+            $('.sale-desc').hide();
+        });
+
+        $('.vip-banner').on('mouseenter', function(e) {
+            $('.vip-desc').show();
+        });
+        $('.vip-banner').on('mouseleave', function(e) {
+            $('.vip-desc').hide();
+        });
+
+        $('.footer-banner').on('mouseenter', function(e) {
+            $('.footer-desc').show();
+        });
+        $('.footer-banner').on('mouseleave', function(e) {
+            $('.footer-desc').hide();
+        });
+    });
+</script>
+
+
+	
+		
+
+

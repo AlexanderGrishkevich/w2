@@ -1,0 +1,156 @@
+<?php
+$form = $this->form;
+$form->prepare();
+$form->setAttribute('action', $this->url(
+                'post', array(
+            'action' => 'edit',
+            'id' => $this->id,
+                )
+));
+echo $this->form()->openTag($form);
+
+echo $this->formHidden($form->get('id'));
+?>
+<div class="post">
+    <div class="post-head">
+        <?= $this->formElement($form->get('title')); ?>
+        <div class="separator">|</div>
+        <?= $this->formElement($form->get('price')); ?>
+        <div class="separator">|</div>
+        <div class="checkbox">Договорная <?php echo $this->formElement($form->get('chaffer')); ?></div>
+    </div>
+    <div class="post-body">
+        <div><?= $this->formElement($form->get('text')); ?></div>
+        <div class="images">
+            <?php foreach ($this->images as $image) { ?>
+                <div class="thumb_74x56" style="background-image: url('<?= $image->filepath ?>')">
+                    <div class="delete-icon" data-id="<?= $image->id ?>"></div>
+                </div>
+            <?php } ?>
+        </div>
+        <div class="files">
+            <?php foreach ($this->files as $file) { ?>
+                <div class="file">
+                    <div class="delete-icon" data-id="<?= $file->id ?>"></div>
+                    <div class="wrap">
+                        <div class="file-icon"></div>
+                        <div class="file-label"><?= $file->filename ?></div>
+                    </div>
+                </div>
+
+            <?php } ?>
+        </div>
+        <div>
+            <div><?php echo $this->formElement($form->get('tags')); ?></div>
+        </div>        
+
+    </div>
+    <div class="post-bottom">
+        <div class="post-bottom_actions">
+            <div class="icon image" id="my-images-dropzone"></div>
+            <div class="icon file" id="my-files-dropzone"></div>
+            <div class="icon tag"></div>
+        </div>
+        <div class="post-bottom_save-btn">
+            <?= $this->formElement($form->get('submit')); ?>
+        </div>
+    </div> 
+</div>
+
+<?php echo $this->form()->closeTag() ?>
+
+
+
+
+<script>
+    $(document).ready(function() {
+        var countImgs = $('.thumb_74x56').size(),
+                countFiles = $('.file').size();
+        Dropzone.options.myImagesDropzone = {
+            paramName: "file",
+            parallelUploads: 1,
+            maxFilesize: 2,
+            maxFiles: 1,
+            autoProcessQueue: true,
+            uploadMultiple: false,
+            acceptedFiles: "image/*, ",
+            accept: function(file, done) {
+                countImgs = $('.thumb_74x56').size();
+                if (countImgs < 6) {
+                    done();
+                }
+            },
+            success: function(file, response) {
+                if (response && response.status === 'ok') {
+
+                    var div_x = $('<div/>').attr('class', 'thumb_74x56').attr('style', 'background-image: url(' + response.src + ');');
+                    var del_div = $('<div/>').attr('class', "delete-icon").attr('data-id', response.upload_id).attr('data-file', file);
+                    $('.images').append(div_x.append(del_div));
+                    $('.delete-icon').on('click', t);
+                    countImgs = $('.thumb_74x56').size();
+                    this.removeFile(file);
+                }
+            }
+        };
+
+        Dropzone.options.myFilesDropzone = {
+            paramName: "file",
+            parallelUploads: 1,
+            maxFilesize: 2,
+            maxFiles: 1,
+            autoProcessQueue: true,
+            uploadMultiple: false,
+            acceptedFiles: "text/*, application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.ms-excel  ",
+            accept: function(file, done) {
+                countFiles = $('.file').size();
+                if (countFiles < 5) {
+                    done();
+                }
+            },
+            success: function(file, response) {
+                if (response && response.status === 'ok') {
+
+                    var div_file = $('<div/>').attr('class', 'file');
+                    var div_wrap = $('<div/>').attr('class', 'wrap');
+                    var div_icon = $('<div/>').attr('class', 'file-icon');
+                    var div_label = $('<div/>').attr('class', 'file-label').text(response.filename);
+                    var div_del = $('<div/>').attr('class', "delete-icon").attr('data-id', response.upload_id);
+                    $('.files').append(div_file.append(div_del).append(div_wrap.append(div_icon).append(div_label)));
+                    $('.delete-icon').on('click', t);
+                    countFiles = $('.file').size();
+                    this.removeFile(file);
+                }
+            }
+        };
+        var myDropzone = new Dropzone("#my-images-dropzone", {url: "/upload/add/<?= $this->id ?>"});
+        var myDropzone2 = new Dropzone("#my-files-dropzone", {url: "/upload/add/<?= $this->id ?>"});
+
+        var tags = $('.form-control.tags').text();
+        if (!tags) {
+            $('.form-control.tags').hide();
+        }
+        $('.tag').on('click', function(e) {
+            var tags = $('.form-control.tags').text();
+            if (!tags) {
+                $('.form-control.tags').toggle().focus();
+            }
+        });
+
+        $('.delete-icon').on('click', t = function() {
+            var row = $(this).parent();
+            var upload_id = $(this).data('id');
+            var post_id = <?= $this->id; ?>;
+            $.ajax({
+                type: "POST",
+                url: "/attachment/delete",
+                data: {"upload_id": upload_id, "post_id": post_id},
+                cache: false,
+                success: function(response) {
+                    if (response && response.status === 'ok') {
+                        row.remove();
+                    }
+                }
+            });
+        });
+    });
+</script>

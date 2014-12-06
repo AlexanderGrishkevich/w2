@@ -1,0 +1,42 @@
+<div class="user-panel-left">
+    <?php if ($this->user): ?>
+        <div id="my-awesome-dropzone" class="user-panel-left_avatar" style="background-image:url(<?= $this->avatar ?>)"></div>
+        <div class="user-panel-left_name">
+            <a href="<?= $this->url('post', array('action' => 'list', 'id' => $this->user->id)); ?>">
+                <?= $this->user->org_name; ?>
+            </a>
+        </div>
+        <div class="user-panel-left_control">
+            
+            <?= $this->navigation('Navigation')->setAcl($this->layout()->acl)->setRole($this->user->role_id); ?>
+
+        </div>
+    <?php endif; ?>
+</div>
+<div class="user-panel-right">
+    <a href="<?= $this->url('post', array('action' => 'add')); ?>">
+        <div class="user-panel-right_create-post">Cоздать объявление</div>
+    </a>
+    <div class="user-panel-right_user-options">
+        <ul>
+            <?php if ($this->user): ?>
+                <li><a href="<?= $this->url('auth', array('action' => 'logout')); ?>">Выйти</a></li>
+            <?php else : ?>
+                <li><a href="<?= $this->url('register'); ?>">Регистрация</a></li>
+                <li>|</li>
+                <li><a href="<?= $this->url('auth'); ?>">Войти</a></li>
+            <?php endif; ?>
+        </ul>		
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var count = <?= $this->count ? $this->count : 0 ?>,
+            msg = $('.navigation li:eq( 1 ) a');
+        if (count) {
+            msg.append($('<span/>').attr('class', 'firm_blue').text(' +' + count));
+        }
+    });
+</script>
+

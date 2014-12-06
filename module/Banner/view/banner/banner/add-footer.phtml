@@ -1,0 +1,45 @@
+<?php
+	$form = $this->form;
+	$form->prepare();
+	$form->setAttribute('action', '/banner/process-footer');
+	echo $this->form()->openTag($form);
+?>
+
+	<div class="banner-form-content">
+		
+		<div class="banner-form-content_upload">
+			<div class="banner-form-content_upload-footer">
+				<?= $this->formFile($form->get('file')); ?>
+			</div>
+		</div>	
+
+		<div class="banner-form-right">
+			<div class="form-description">Загрузите изрбражение разрешением 145х35 пикселей.</div>
+			<div class="form-input form-input-banners form-input-submit float-left"><?= $this->formElement($form->get('submit')); ?></div>
+			<div class="form-error"><?= $this->formElementErrors($form->get('submit')); ?></div>				
+		</div>
+
+	</div>
+
+<?php echo $this->form()->closeTag() ?>
+
+<script>
+	$(document).ready(function() {
+		function readURL(input) {
+			if (input.files) {
+				$.each(input.files, function(index, value) {
+					var reader = new FileReader(); 
+					reader.onload = function (e) {
+						var src = e.target.result;
+						$('.banner-form-content_upload-footer').css('background-image', 'url(' + src + ')');
+					}
+					reader.readAsDataURL(value);
+				});
+			}
+		}
+
+		$('.banner-add-input').change(function(){
+			readURL(this);
+		});
+	});
+</script>

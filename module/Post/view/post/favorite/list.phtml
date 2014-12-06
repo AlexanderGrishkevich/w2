@@ -1,0 +1,48 @@
+<?php
+foreach ($this->favorites as $favorite) {
+    $image = $this->postTable->getImagesByPostId($favorite->id)->current();
+    ?>
+    <div class="favorite-item">
+        <div class="delete-favorite">
+            <div class="delete-icon-favorite" data-id="<?= $favorite->id ?>"></div>
+        </div>
+        <a href="<?= $this->url('post', array('action' => 'details', 'id' => $favorite->id)); ?>"><div class="image-favorite">
+                <div class="image-icon-favorite" style="background-image: url('<?php echo $image ? $image->filepath : '/img/358x238_none.png' ?>')"></div>
+            </div>
+            <div class="content-favorite">
+                <div class="title-favorite"><?= $favorite->title ?></div>
+                <div class="text-favorite"><?= $favorite->text ?></div>
+            </div>
+            <div class="date-price-favorite">
+                <div class="price-favorite"><?= $favorite->price . ' у.е.' ?></div>
+                <div class="date-favorite"><?php echo $favorite->chaffer ? 'Договорная' : ''; ?></div>
+                <div class="chaffer-favorite"><?= $favorite->create_date ?></div>
+            </div></a>
+    </div> 
+<?php } ?>
+
+<?php if (!$this->favorites->count()) { ?>
+    <div class="not-items">Нет закладок</div>
+<?php } ?>
+
+
+<script>
+    $(document).ready(function() {
+        $('.delete-icon-favorite').on('click', function() {
+            var item = $(this).parents('.favorite-item');
+            var postId = $(this).data('id');
+            $.ajax({
+                type: "POST",
+                url: "/favorite/delete",
+                data: {"postId": postId},
+                cache: false,
+                success: function(response) {
+                    if (response && response.status === 'ok') {
+                        item.remove();
+                    }
+                }
+            });
+        });
+    });
+</script>
+

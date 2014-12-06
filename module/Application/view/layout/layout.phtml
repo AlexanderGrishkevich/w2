@@ -1,0 +1,266 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <?php echo $this->headTitle('ARDFO') ?>
+
+        <?php
+        echo $this->headMeta()
+                ->appendName('viewport', 'width=device-width, height=device-height, initial-scale=1.0')
+                ->appendName('description', 'ARDFO - информационный ресурс бесплатных объявлений частных лиц и рекламы организаций')
+                ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+        ?>
+
+        <?php
+        echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.png'))
+                ->prependStylesheet($this->basePath() . '/css/style.css')
+                ->prependStylesheet($this->basePath() . '/css/jquery.tosrus.all.css')
+        ?>
+
+        <?php
+        echo $this->headScript()
+                ->prependFile($this->basePath() . '/js/jquery.autosize.min.js')
+                ->prependFile($this->basePath() . '/js/jquery.nicescroll.min.js')
+                ->prependFile($this->basePath() . '/js/jquery.tosrus.min.all.js')
+                ->prependFile($this->basePath() . '/js/jcarousellite_1.0.1.min.js')
+                ->prependFile($this->basePath() . '/js/jquery.min.js')
+                ->prependFile($this->basePath() . '/js/dropzone.js')
+                ->prependFile($this->basePath() . '/js/respond.min.js', 'text/javascript', array('conditional' => 'lt IE 9',))
+                ->prependFile($this->basePath() . '/js/html5shiv.js', 'text/javascript', array('conditional' => 'lt IE 9',))
+        ;
+        ?>
+    </head>
+    <body class="<?= $this->controllerName(); ?>">
+        <div class="wrapper">
+            <nav>
+                <div class="nav-left">
+                    <a class="main-logo" href="/">
+                    </a>
+                </div>
+                <div class="nav-right">
+                    <div id="block-search-result">
+                        <ul id="list-search-result"></ul>
+                    </div>
+                    <form class="nav-right-form" method="GET" action="/search/index">
+                        <div class="nav-right-form_input">
+                            <input name="query" class="search" type="search" required="required" placeholder="Ищем на ardfo" autocomplete="off">
+                        </div>
+                        <div class="nav-right-form_btn">
+                            <input type="submit" class="submit" value="Найти" autocomplete="off">
+                        </div>
+                    </form>
+                    <div class="user-panel">
+                        <?= $this->userWidget(); ?>
+                    </div>
+                </div>
+            </nav>
+            <div class="container">
+                <div class="left-banners">
+                    <?php echo $this->SimpleBanners(); ?>
+                </div>
+                <div class="content">
+                    <?php echo $this->content; ?>
+                </div>
+                <div class="vip-banners">
+                </div>
+            </div>                
+        </div>
+        <footer>
+            <div class="footer-slider">
+                <div class="footer-slider_control_prev prev">
+                </div>
+                <div class="footer-slider_content">
+                    <ul id="footer-slider_content">
+                        <?php echo $this->FooterBanners(); ?>
+                    </ul>
+                </div>
+                <div class="footer-slider_control_next next">
+                </div>
+            </div>
+            <div class="footer-links">
+
+                <?php echo $this->navigation('FooterNavigation')->menu()->setUlClass('footer-links-left'); ?>
+
+                <div class="footer-links-right">
+                    <span>© <?php echo date('Y') ?> ardfo.by Все права защищены.</span>
+                </div>                    
+            </div>
+        </footer>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('textarea').autosize();
+                var delay = (function() {
+                    var timer = 0;
+                    return function(callback, ms) {
+                        clearTimeout(timer);
+                        timer = setTimeout(callback, ms);
+                    };
+                })();
+                var resize = function() {
+                    if (parseInt(content.css('min-height')) < parseInt(content.css('height'))) {
+                        $('body.details .content').css('border-bottom', '0px');
+                        $('body.favorite .content').css('border-bottom', '0px');
+                        $('body.search .content').css('border-bottom', '0px');
+                        $('body.dialog .content').css('border-bottom', '0px');
+                    } else {
+                        content.css('border-bottom', '1px solid #dbdbdb');
+                    }
+                };
+                resize();
+                
+                $('.register-price-list').on('click', function() {
+                    if ($('.price-image').css('display') == 'none') {
+                        $('.price-image').show();
+                        $('.banner-button').show();
+                    } else {
+                        $('.price-image').hide();
+                        $('.banner-button').hide();
+                    }
+                    resize();
+                });
+                if ($('#my-awesome-dropzone').length) {
+                    Dropzone.options.myAwesomeDropzone = {
+                        maxFilesize: 2,
+                        autoProcessQueue: true,
+                        addRemoveLinks: false,
+                        accept: function(file, done) {
+                            done();
+                        },
+                        success: function(file, response) {
+                            if (response && response.status && response.status === 'ok') {
+                                location.reload();
+                            }
+                        }
+                    };
+                    var myDropzone = new Dropzone("#my-awesome-dropzone", {url: '/user/update-avatar'});
+                }
+
+                //ajax search
+                var maxIndex = $('#list-search-result > li').size();
+                var index = maxIndex;
+                $('input.search').bind("change paste keyup", function(e) {
+                    $('.element-result').css("background-color", "white");
+                    if (e.keyCode == '40') {
+                        index = index + 1;
+                        if (index > maxIndex) {
+                            index = 0;
+                        }
+                        $('.element-result').eq(index).css("background-color", "#dadada");
+                    }
+                    if (e.keyCode == '38') {
+                        index = index - 1;
+                        if (index < 0) {
+                            index = maxIndex;
+                        }
+                        $('.element-result').eq(index).css("background-color", "#dadada");
+                    }
+
+                    if (e.keyCode == '13' && index != maxIndex) {
+                        location.href = $('.element-result > a').eq(index).attr('href');
+                    }
+
+
+                    if (e.keyCode != '40' && e.keyCode != '38') {
+                        var input_search = $('input.search').val();
+                        delay(function() {
+                            if (input_search.length > 0 && input_search.length < 150) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/search/ajaxSearch",
+                                    data: {"q": input_search},
+                                    dataType: "html",
+                                    cache: false,
+                                    success: function(data) {
+                                        $("#block-search-result").show(); // Показываем блок с результатом.
+                                        $("#list-search-result").html(data);
+                                        maxIndex = $('#list-search-result > li').size();
+                                        index = maxIndex;
+                                        if (!$('#list-search-result > li').size()) {
+                                            $("#block-search-result").hide();
+                                        } else {
+                                        }
+                                    }
+                                });
+                            } else {
+                                $("#block-search-result").hide();
+                            }
+                        }, 900);
+                    }
+                });
+                $('.search').on('focus', function() {
+                    var input_search = $(this).val();
+                    if (input_search.length) {
+                        $("#block-search-result").show();
+                    }
+                });
+                $(this).on('click', function(event) {
+                    var t = event.target || event.srcElement;
+                    if (t.className !== "search" && t.className !== "element-result") {
+                        $("#block-search-result").hide();
+                    }
+                });
+                $(function() {
+                    var countBanners = $('#footer-slider_content > li').size();
+                    if (countBanners > 7) {
+                        $(".footer-slider_content").jCarouselLite({
+                            speed: 800,
+                            visible: 7,
+                            btnNext: ".prev",
+                            btnPrev: ".next"
+                        });
+                    } else {
+                        $(".footer-slider_content").jCarouselLite({
+                            visible: countBanners
+                        });
+                    }
+                });
+                $('textarea').bind('input propertychange', function(e) {
+                    resize();
+                });
+                $('.banner-button-link > textarea').val('<a href="http://ardfo.by/" target="_blank" title="ARDFO.BY - Объявления и Реклама">' +
+                        '<img src="http://ardfo.by/img/ardfo-banner.png" width="88" height="31" border="0" alt="ARDFO.BY - Объявления и Реклама"></a>');
+                $(window).on('resize', function(e) {
+                    resize();
+                });
+            });
+        </script>   
+
+        <!-- Yandex.Metrika informer -->
+        <a href=""
+           target="_blank" rel="nofollow" onclick="try {
+                       Ya.Metrika.informer({i: this, id: 25773965, lang: 'ru'});
+                       return false
+                   } catch (e) {
+                   }"</a>
+        <!-- /Yandex.Metrika informer -->
+
+        <!-- Yandex.Metrika counter -->
+        <script type="text/javascript">
+            (function(d, w, c) {
+                (w[c] = w[c] || []).push(function() {
+                    try {
+                        w.yaCounter25773965 = new Ya.Metrika({id: 25773965,
+                            clickmap: true,
+                            trackLinks: true,
+                            accurateTrackBounce: true});
+                    } catch (e) {
+                    }
+                });
+                var n = d.getElementsByTagName("script")[0],
+                        s = d.createElement("script"),
+                        f = function() {
+                            n.parentNode.insertBefore(s, n);
+                        };
+                s.type = "text/javascript";
+                s.async = true;
+                s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+                if (w.opera == "[object Opera]") {
+                    d.addEventListener("DOMContentLoaded", f, false);
+                } else {
+                    f();
+                }
+            })(document, window, "yandex_metrika_callbacks");
+        </script>
+    </body>
+</html>

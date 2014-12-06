@@ -1,0 +1,247 @@
+<?php $authUserLike = $this->postTable->getLikeByPostIdAndUserId($this->post->id, $this->authUser); ?>
+<div class="post-item" data-post-id="<?= $this->post->id ?>">
+    <div class="post-content">
+        <div class="post-item__head">
+            <div class="post-item__head-avatar">
+                <a href="<?php echo '/post/list/' . $this->post->user_id ?>">
+                    <div class="avatar" style="background-image: url('<?php echo $this->post->avatar ? $this->Thumb(substr($this->post->avatar, 6), 45, 45) : '/img/no-avatar.png' ?>')"></div>
+                </a>
+            </div>
+            <div class="post-item__head-mid">
+                <a href="<?php echo '/post/list/' . $this->post->user_id ?>"><div class="post-item__head-author-name"><?= $this->post->org_name ?></div></a>
+                <div class="left-side">
+                    <div class="post-item__head-author-location"><?= $this->post->city ?></div>
+                </div>
+                <div class="right-side">
+                    <div class="post-item__head-chaffer"><?= $this->post->chaffer ? 'Договорная' : '' ?></div>
+                    <div class="post-item__head-price"><?= $this->post->price . ' у.е.' ?></div>
+                </div>
+                <div class="post-item__head-title"><?= $this->post->title ?></div>
+            </div>
+            <div class="post-item__head-actions">
+                <?php if ($this->authUser == $this->post->user_id) { ?>
+                    <a href="/post/edit/<?= $this->post->id ?>"><div class="edit-icon"></div></a>
+                    <div class="divide">|</div>
+                    <div class="refresh-icon"></div>
+                    <div class="divide">|</div>
+                    <div class="delete-icon"></div>
+                <?php } else { ?>
+                    <a href="<?php echo '/dialog/open/' . $post->user_id ?>"><div class="chat-icon"></div></a>
+                <?php } ?>
+            </div>
+            <div class="post-item__head-createDate"><?= date_format(new DateTime($this->post->create_date), 'd.m.y H:i') ?></div>
+        </div>
+        <div class="post-item__body">
+            <div class="post-details-item__body-text">
+                <?php echo nl2br($this->escapeHtml($this->post->text)); ?>
+            </div>
+
+            <div class="tags"> 
+                <?php
+                preg_match_all('/#[^\\s#]+/', $post->tags, $matches);
+                if (count($matches[0])) {
+                    for ($i = 0; $i < count($matches[0]); $i++) {
+                        ?>
+                        <?php $a = substr($matches[0][$i], 1); ?>
+                        <a href="/post/tags?t=<?= $a; ?>"><?= $matches[0][$i]; ?></a>
+                        <?php
+                    }
+                }
+                ?>
+            </div>
+
+            <div class="post-item__body-images">
+                <?php if ($this->images->count() == 0) { ?>
+                    <div class="big_image" data-src="/img/358x238_none.png" style="background-image: url('/img/358x238_none.png'); border: 1px solid #dbdbdb;"></div>
+                <?php } elseif ($this->images->count() == 1) { ?>
+                    <div class="big_image" data-src="<?= $this->images->current()->filepath ?>" style="background-image: url('<?php echo $this->Thumb($this->images->current()->filepath, 360, 238) ?>')"></div>
+                    <?php
+                } else {
+                    $imagesArray = $this->images->toArray();
+                    ?>
+                    <div class="big_image" data-src="<?= $imagesArray[0]['filepath'] ?>" style="float: left; background-image: url('<?php echo $this->Thumb($imagesArray[0]['filepath'], 360, 238) ?>')"></div>
+                    <div class="small_images">
+                        <?php
+                        for ($i = 1; $i < $this->images->count(); $i++) {
+                            ?>
+                            <div class="small_image" data-src="<?= $imagesArray[$i]['filepath'] ?>" style="background-image: url('<?php echo $this->Thumb($imagesArray[$i]['filepath'], 65, 45.5); ?>');"></div>
+                        <?php } ?>
+                    </div>
+                <?php } ?>
+            </div>
+            <div class="post-item__body-files">
+                <?php foreach ($files as $file) { ?>
+                    <a target="_blank" download="" href="<?= $file->filepath ?>"><div class="file">
+                            <div class="file-icon"></div>
+                            <div class="file-label"><?= $file->filename ?></div>
+                        </div></a>
+                <?php } ?>
+            </div>
+            <div class="post-item__body-replies">
+                <div class="replice-left">
+                    <div class="post-item__body-comments">
+                        <a href="/post/details/<?= $this->post->id ?>"><div class="commtent-icon"></div></a>
+                        <div class="commtent-count"><?= $this->post->comments ?></div>
+                    </div>
+                </div>
+                <div class="replice-right">
+                    <div class="post-item__body-favorite <?= $this->post->favorite ? 'active' : '' ?>"></div>
+                    <div class="divide">|</div>
+                    <div class="post-item__body-likes">
+                        <div class="likes-icon <?= $authUserLike ? 'active' : '' ?>"></div>
+                        <div class="likes-count <?= $authUserLike ? 'firm_blue' : '' ?>"><?= $this->post->likes ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-comments">
+
+        <?php foreach ($this->comments as $comment) { ?>
+            <div class="post-comment">
+                <a href="/post/list/<?= $comment->user_id ?>"><div class="comment-avatar" style="background-image: url(<?php echo $comment->avatar ? $this->Thumb(substr($comment->avatar, 6), 30, 30) : '/img/no-avatar.png' ?>)"></div></a>
+                <div class="comment-body">
+                    <div class="comment-body__top">
+                        <a href="/post/list/<?= $comment->user_id ?>"><div class="comment-author"><?= $comment->org_name ?></div></a>
+                        <div class="comment-date"><?= date_format(new DateTime($comment->date), 'd.m.y H:i') ?></div>
+                    </div>
+                    <div class="comment-text"><?= $comment->text ?></div>
+                </div>
+
+            </div>
+        <?php } ?>
+    </div>
+    <?php
+    $form = $this->form;
+    $form->prepare();
+    $form->setAttribute('action', $this->url(
+                    'comment', array(
+                'action' => 'save'
+                    )
+    ));
+    ?>
+    <?php echo $this->form()->openTag($form); ?>
+    <div class = "chat-comment-control">
+        <?php echo $this->formElement($form->get('text')); ?>
+        <?php echo $this->formElementErrors($form->get('text')); ?>
+
+        <?php echo $this->formElement($form->get('submit')); ?>
+        <?php echo $this->formElementErrors($form->get('submit')); ?>
+
+        <?php echo $this->formHidden($form->get('post_id')); ?>
+    </div>
+    <?php echo $this->form()->closeTag() ?>
+</div>
+<div id="links"></div>
+
+<script>
+    $(document).ready(function() {
+        $('body').on('click', '.delete-icon', function() {
+            var item = $(this).parents('.post-item');
+            var id = $(this).parents('.post-item').data('post-id');
+
+            if (confirm("Вы действительно хотите удалить этот пост?")) {
+                $.ajax({
+                    type: "POST",
+                    url: "/post/delete",
+                    data: {"id": id},
+                    cache: false,
+                    success: function(response) {
+                        if (response && response.status === 'ok') {
+                            item.remove();
+                        }
+                    }
+                });
+            }
+        });
+
+        $('body').on('click', '.refresh-icon', function() {
+            var id = $(this).parents('.post-item').data('post-id');
+            var date = $(this).parents('.post-item__head').find('.post-item__head-createDate');
+            $.ajax({
+                type: "POST",
+                url: "/post/refresh",
+                data: {"id": id},
+                cache: false,
+                success: function(response) {
+                    if (response && response.status === 'ok') {
+                        date.text('');
+                        setTimeout(function() {
+                            date.text(response.date)
+                        }, 500);
+                    }
+                }
+            });
+        });
+
+        $('.post-item__body-likes').on('click', function() {
+            var id = $(this).parents('.post-item').data('post-id');
+            var lc = $(this).children('.likes-count');
+            var li = $(this).children('.likes-icon');
+
+            $.ajax({
+                type: "POST",
+                url: "/like/like",
+                data: {"id": id},
+                cache: false,
+                success: function(response) {
+                    if (response && response.status === 'ok') {
+                        if (response.value) {
+                            li.addClass('active');
+                            lc.addClass('firm_blue');
+                        } else {
+                            li.removeClass('active');
+                            lc.removeClass('firm_blue');
+                        }
+                        lc.text(response.countLikes);
+                    } else {
+                        document.location.href = "/register";
+                    }
+                }
+            });
+        });
+
+        $('.post-item__body-favorite').on('click', function() {
+            var id = $(this).parents('.post-item').data('post-id');
+            var favoriteIcon = $(this);
+
+            $.ajax({
+                type: "POST",
+                url: "/favorite/favorite",
+                data: {"id": id},
+                cache: false,
+                success: function(response) {
+                    if (response && response.status === 'ok') {
+                        if (response.value) {
+                            favoriteIcon.addClass('active');
+                        } else {
+                            favoriteIcon.removeClass('active');
+                        }
+                    } else {
+                        document.location.href = "/register";
+                    }
+                }
+            });
+        });
+
+        $('body').on('click', '.big_image', function() {
+            $('#links').empty();
+            var links = $("#links");
+            links.append($('<a></a>').attr('href', $(this).data('src')));
+
+            $(this).parents('.post-item').find('.small_image').each(function(index) {
+                links.append($('<a></a>').attr('href', $(this).data('src')));
+            });
+
+            var tos = $("#links a").tosrus({
+                pagination: {
+                    add: true,
+                    type: "thumbnails"
+                }
+            });
+            tos.trigger("open");
+        });
+    });
+</script>
+
+

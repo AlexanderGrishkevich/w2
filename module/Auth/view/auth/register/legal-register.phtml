@@ -1,0 +1,170 @@
+<?php
+	$form = $this->form;
+	$form->prepare();
+	$form->setAttribute('action', '/register/process-legal');
+	echo $this->form()->openTag($form);
+?>
+
+	<div class="register-form-content">
+		<h3>Регистрационные данные</h3>
+		<?= $this->formLabel($form->get('email')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('email')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('email')); ?></div>
+
+		<?= $this->formLabel($form->get('password')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('password')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('password')); ?></div>
+
+		<h3>Контактные данные</h3>
+
+		<?= $this->formLabel($form->get('org_name')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('org_name')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('org_name')); ?></div>
+
+		<?= $this->formLabel($form->get('position')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('position')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('position')); ?></div>
+
+		<?= $this->formLabel($form->get('last_name')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('last_name')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('last_name')); ?></div>
+
+		<?= $this->formLabel($form->get('first_name')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('first_name')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('first_name')); ?></div>
+
+		<?= $this->formLabel($form->get('middle_name')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('middle_name')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('middle_name')); ?></div>
+
+		<?= $this->formLabel($form->get('country')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('country')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('country')); ?></div>
+
+		<?= $this->formLabel($form->get('region')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('region')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('region')); ?></div>
+
+		<?= $this->formLabel($form->get('city')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('city')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('city')); ?></div>
+
+		<?= $this->formLabel($form->get('zip')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('zip')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('zip')); ?></div>
+
+		<?= $this->formLabel($form->get('street')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('street')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('street')); ?></div>
+
+		<?= $this->formLabel($form->get('house')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('house')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('house')); ?></div>
+
+		<?= $this->formLabel($form->get('office')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('office')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('office')); ?></div>
+
+		<?= $this->formLabel($form->get('phone')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('phone')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('phone')); ?></div>
+
+		<h3>Регистрационная форма в ЕГР (сведения из св-ва о регистрации)</h3>
+
+		<?= $this->formLabel($form->get('unp')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('unp')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('unp')); ?></div>
+
+		<?= $this->formLabel($form->get('egr_org')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('egr_org')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('egr_org')); ?></div>
+
+		<?= $this->formLabel($form->get('egr_num')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('egr_num')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('egr_num')); ?></div>
+
+		<?= $this->formLabel($form->get('egr_date')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('egr_date')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('egr_date')); ?></div>
+
+		<h3>Банковские реквизиты</h3>
+
+		<?= $this->formLabel($form->get('bank')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('bank')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('bank')); ?></div>
+
+		<?= $this->formLabel($form->get('bank_code')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('bank_code')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('bank_code')); ?></div>
+
+		<?= $this->formLabel($form->get('bank_address')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('bank_address')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('bank_address')); ?></div>
+
+		<?= $this->formLabel($form->get('bank_acc')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('bank_acc')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('bank_acc')); ?></div>
+
+		<div class="form-input form-input-captcha"><?= $this->formCaptcha($form->get('captcha')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('captcha')); ?></div>
+
+		<div class="form-input form-input-licence">
+			При нажатии на кнопку <span class="bold">Регистрация</span> Вы подтверждаете, что прочитали и согласны с <a href="/page/agreement">Пользовательским соглашением</a> и <a href="/page/offer">Офертой</a>.			
+		</div>
+
+		<div class="form-input form-input-submit"><?= $this->formElement($form->get('submit')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('submit')); ?></div>	
+
+	</div>
+
+<?php echo $this->form()->closeTag() ?>
+
+<script>
+$(document).ready(function() {
+	
+	function populateRegionSelect() {
+		var selectedCountry = $('select[name="country"] option:selected').val(),
+			list = '';
+
+		$.ajax({
+			method: 'post',
+			data: 'country_id=' + selectedCountry, 
+			url: '/location/get-region',
+			success: function(response) {
+				$.each(response, function(key, value){
+					list += '<option data-name=' + value.id + ' value=' + value.id + '>' + value.title + '</option>';
+				});
+				$('select[name="region"]').html(list);
+			}
+		});
+	}
+
+	function populateCitySelect() {
+		var selectedRegion = $('select[name="region"] option:selected').val(),
+			list = '';
+
+		$.ajax({
+			method: 'post',
+			data: 'region_id=' + selectedRegion, 
+			url: '/location/get-city',
+			success: function(response) {
+				$.each(response, function(key, value){
+					list += '<option data-name=' + value.id + ' value=' + value.id + '>' + value.title + '</option>';
+				});
+				$('select[name="city"]').html(list);
+			}
+		});
+	}
+	
+	$('select[name="country"]').on('change', function(event) {
+		event.preventDefault();
+		populateRegionSelect();
+	});
+
+	$('select[name="region"]').on('change', function(event) {
+		event.preventDefault();
+		populateCitySelect();
+	});
+
+});
+</script>

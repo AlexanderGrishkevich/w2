@@ -1,0 +1,14 @@
+<table class="admin-feedback">
+	<tr class="table-header">
+		<td>Пользователь</td>
+		<td>Контакты</td>
+		<td>Отзыв</td>
+	</tr>
+	<?php foreach($this->feedbacks as $feedback): ?>
+		<tr>
+			<td><?= $feedback->username ?></td>
+			<td><?= $feedback->userdata ?></td>
+			<td><?= $feedback->text ?></td>
+		</tr>
+	<?php endforeach; ?>
+</table>

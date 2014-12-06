@@ -1,0 +1,24 @@
+<?php
+	$form = $this->form;
+	$form->prepare();
+	$form->setAttribute('action', '/change-password/process');
+	echo $this->form()->openTag($form);
+?>
+	<div class="change-password-form-content">
+		<?php if (!empty($this->old_password_error)): ?>
+			<div class="form-error"><?= $this->old_password_error; ?></div>
+		<?php endif; ?>
+
+		<?= $this->formLabel($form->get('old_password')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('old_password')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('old_password')); ?></div>
+
+		<?= $this->formLabel($form->get('new_password')); ?>
+		<div class="form-input"><?= $this->formElement($form->get('new_password')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('new_password')); ?></div>
+
+		<div class="form-input form-input-submit"><?= $this->formElement($form->get('submit')); ?></div>
+		<div class="form-error"><?= $this->formElementErrors($form->get('submit')); ?></div>	
+	</div>
+	
+<?php echo $this->form()->closeTag() ?>

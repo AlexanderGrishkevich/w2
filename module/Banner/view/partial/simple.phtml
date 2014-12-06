@@ -1,0 +1,5 @@
+<?php foreach($this->banners as $key => $banner): ?>
+	<a href="<?= $this->url('post', array('action' => 'list', 'id' => $banner['id']))?>">
+		<div class="simple-banner-item simple-banner-item-<?= $key; ?>" style="background-image: url(<?= $banner['url']; ?>)" ></div>
+	</a>
+<?php endforeach; ?>

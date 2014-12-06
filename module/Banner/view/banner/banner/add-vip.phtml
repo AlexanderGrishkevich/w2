@@ -1,0 +1,77 @@
+<?php
+	$form = $this->form;
+	$form->prepare();
+	$form->setAttribute('action', '/banner/process-vip');
+	echo $this->form()->openTag($form);
+?>
+
+	<div class="banner-form-content">
+		
+		<div class="banner-form-content_upload">
+                    <div class="vip-banner-wrap">
+			<div class="banner-form-content_upload-vip">
+				<div class="vip-upload-image">
+				</div>
+				<div class="vip-upload-description">
+					<div class="vip-banner-item_vip">VIP-объявление</div>
+					<div class="vip-banner-item_text">
+						<span class="vip-banner-item_text-text"></span>
+						<span class="vip-banner-item_text-price"></span>
+					</div>
+				</div>
+				<?= $this->formFile($form->get('file')); ?>
+			</div>
+                    </div>   
+		</div>	
+
+		<div class="banner-form-right">
+			<div class="form-description form-description-margin"><p>Загрузите изрбражение разрешением 115х110 пикселей. Заполните поля для ввода.</p></div>
+
+			<?= $this->formLabel($form->get('title')); ?>
+			<div class="form-input form-input-vip-title"><?= $this->formelement($form->get('title')); ?></div>
+			<div class="form-error"><?= $this->formElementErrors($form->get('title')); ?></div>	
+
+			<?= $this->formLabel($form->get('price')); ?>
+			<div class="form-input form-input-vip-price"><?= $this->formelement($form->get('price')); ?></div>
+			<div class="form-error"><?= $this->formElementErrors($form->get('price')); ?></div>	
+
+			<div class="vip-banner-cost">
+			</div>
+
+			<div class="form-input form-input-banners form-input-submit float-left"><?= $this->formElement($form->get('submit')); ?></div>
+			<div class="form-error"><?= $this->formElementErrors($form->get('submit')); ?></div>				
+		</div>
+	</div>
+
+<?php echo $this->form()->closeTag() ?>
+
+<script>
+	$(document).ready(function() {
+		function readURL(input) {
+			if (input.files) {
+				$.each(input.files, function(index, value) {
+					var reader = new FileReader(); 
+					reader.onload = function (e) {
+						var src = e.target.result;
+						$('.vip-upload-image').css('background-image', 'url(' + src + ')');
+					}
+					reader.readAsDataURL(value);
+				});
+			}
+		}
+
+		$('.banner-add-input').change(function(){
+			readURL(this);
+		});
+
+
+		$('input[name="title"]').on('keyup', function(event) {
+			$('.vip-banner-item_text-text').empty().text($(this).val());
+		});
+
+		$('input[name="price"]').on('keyup', function(event) {
+			$('.vip-banner-item_text-price').empty().text($(this).val() + ' у.е.');
+		});		
+
+	});
+</script>

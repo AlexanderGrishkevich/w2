@@ -1,0 +1,32 @@
+<?php
+foreach ($this->resp as $resp) :
+        for ($i=1; $i<=$this->count; $i++) { ?>
+<div class="artist"><?php echo $resp[$i]['artist'] . ' - ' . $resp[$i]['title'] ?></div>
+<button class="button" data-url="<?= $resp[$i]['url'] ?>">Слушать</button>
+        <?php }
+endforeach;
+
+?>
+<audio class="audio" preload="auto" controls autoplay loop></audio>
+<script src="jquery.js"></script>
+<script src="audioplayer.js"></script>
+<script>
+    $(function () {
+        $('.button').on('click', function () {
+            $('audio').attr('src', $(this).data('url'));
+        });
+        
+        var player = $('audio').audioPlayer({
+            classPrefix: 'audioplayer',
+            strPlay: 'Play',
+            strPause: 'Pause',
+            strVolume: 'Volume'
+        });
+    });
+</script>
+
+<style>
+    .artist {
+        float: left;
+    }
+</style>

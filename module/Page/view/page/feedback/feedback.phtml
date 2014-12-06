@@ -1,0 +1,76 @@
+<div class="static-page-title">Обратная связь</div>
+<?php
+$form = $this->form;
+$form->prepare();
+$form->setAttribute('action', '/feedback/process-feedback');
+echo $this->form()->openTag($form);
+?>
+
+<div class="feedback-form-content">
+    <?= $this->formLabel($form->get('username')); ?>
+    <div class="form-input"><?= $this->formElement($form->get('username')); ?></div>
+    <div class="form-error"><?= $this->formElementErrors($form->get('username')); ?></div>
+
+    <?= $this->formLabel($form->get('userdata')); ?>
+    <div class="form-input user-data"><?= $this->formElement($form->get('userdata')); ?></div>
+    <div class="form-error"><?= $this->formElementErrors($form->get('userdata')); ?></div>
+
+    <?= $this->formLabel($form->get('text')); ?>
+    <div class="form-input"><?= $this->formElement($form->get('text')); ?></div>
+    <div class="form-error"><?= $this->formElementErrors($form->get('text')); ?></div>
+
+    <?= $this->formCaptcha($form->get('captcha')); ?>
+    <div class="form-error"><?= $this->formElementErrors($form->get('captcha')); ?></div>
+
+    <div class="form-submit"><?= $this->formElement($form->get('submit')); ?></div>
+    <div class="form-error"><?= $this->formElementErrors($form->get('submit')); ?></div>	
+
+</div>
+
+<?php echo $this->form()->closeTag() ?>
+
+
+<style>
+    .feedback-form-content .user-data textarea {
+        height: 70px;
+    }
+    .feedback-form-content {
+        width: 300px;
+        margin: 0 auto;
+        padding-top: 12px;
+    }
+    .feedback-form-content textarea {
+        max-width: 294px;
+        width: 100%;
+        border: 1px solid #dbdbdb;
+        height: 220px;
+    }
+    .feedback-form-content pre {
+        font-size: 8px;
+        line-height: 8px;
+        text-align: center;
+    }
+    .form-control {
+        width: 290px;
+        height: 25px;
+        line-height: 23px;
+        vertical-align: top;
+        padding: 0px 4px;
+        border: 1px solid #dbdbdb;
+    }
+    
+    .form-submit {
+        width: 90px;
+        margin: 0 auto;
+        padding-top: 5px;
+    }
+    
+    .feedback-submit {
+        text-align: center;
+        color: #fff;
+        width: 90px;
+        line-height: 23px;
+        background: #009cff;
+        border: none;
+    }
+</style>

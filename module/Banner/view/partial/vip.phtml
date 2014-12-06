@@ -1,0 +1,9 @@
+<?php foreach($this->banners as $key => $banner): ?>
+	<div class="vip-banner-wrapper">
+		<a href="<?= $this->url('post', array('action' => 'list', 'id' => $banner['id']))?>">
+			<div class="vip-banner-item vip-banner-item-<?= $key; ?>" style="background-image: url(<?= $banner['url']; ?>)" ></div>
+		</a>		
+		<div class="vip-banner-item_vip">VIP-объявление</div>
+		<div class="vip-banner-item_text"><?= $banner['title']; ?> <span class="vip-banner-item_text-price"><?= $banner['price']; ?> у.е</span></div>
+	</div>
+<?php endforeach; ?>

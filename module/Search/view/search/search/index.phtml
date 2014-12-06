@@ -1,0 +1,242 @@
+<?php $this->order == 'ASC' ? $this->order = '&order=DESC' : $this->order = '&order=ASC' ?>
+<section class="search-filter">
+    <div class="search-filter__top">
+        <div class="search-filter__top-sorts">Сортировать по:
+            <a class="by_date" href="<?= $this->url . 'create_date' ?>">по дате</a>
+            <a class="by_price" href="<?= $this->url . 'price' . $this->order ?>">по цене</a>
+        </div>
+        <div class="search-filter__top-icons">
+            <div class="search-filter__top-icons large"></div>
+            <div class="search-filter__top-icons small active"></div>
+            <div class="search-filter__top-icons without"></div>
+        </div>
+    </div>
+    <div class="search-filter__bottom">
+        <div class="search-filter__bottom-regions unselectable">Регион:
+            <?php
+            if (!$this->country) {
+                $this->country = 'Вся Беларусь';
+                $this->region = '';
+                $this->city = '';
+            } elseif (!$this->region) {
+                $this->region = 'Все области';
+                $this->city = '';
+            } elseif ($this->region == 'Минск') {
+                $this->region = $this->region;
+                $this->city = '';
+            } elseif (!$this->city) {
+                $this->city = 'Все города';
+            }
+            ?>
+            <a class="country-link" data-id="" href="#"><?= $this->country ?></a>
+            <a class="region-link" data-id="" href="#"><?= $this->region ?></a>
+            <a class="city-link" data-id="" href="#"><?= $this->city ?></a>
+        </div>
+        <div class="search-filter__bottom-count"> Найдено: 
+            <span class="count"><?= $this->searchResults->count() ?></span>
+        </div>
+    </div>
+</section>
+<div class="search-result small" >
+    <div class="search-result-items">
+        <?php foreach ($this->searchResults as $searchResult) { ?>
+            <div class="fucking-line"></div>
+            <?php $image = $this->postTable->getImagesByPostId($searchResult->id)->current(); ?>
+            <a href="<?php echo '/post/details/' . $searchResult->id ?>"><div class="result-item">
+                    <div class="result-item__image">
+                        <div class="item-image" style="background-image: url(<?= $image ? $this->thumb($image->filepath, 120, 80) : '/img/no-image-search.png' ?>);"></div>
+                    </div>
+                    <div class="result-item__title-text">
+                        <div class="item-title"><?= $searchResult->title ?></div>
+                        <div class="item-text"><?= $searchResult->text ?></div>
+                    </div>    
+                    <div class="result-item__date-price">
+                        <div class="item-price"><?= $searchResult->price . ' у.е.' ?></div>
+                        <div class="item-chaffer"><?= $searchResult->chaffer ? 'Договорная' : '' ?></div>
+                        <div class="item-date"><?= $searchResult->create_date ?></div>
+                    </div>  
+                </div></a>
+        <?php } ?>
+    </div>
+</div>
+<?php if (!$this->searchResults->count()) { ?>
+    <div class="not-items-search"><?php echo $this->translate('Sorry, your search did not match, please try again.'); ?></div>
+<?php } ?>
+
+<div class="countryies"></div>
+<div class="regions"></div>
+<div class="cities"></div>
+
+<script>
+    $(document).ready(function() {
+        var divSearch = $('.search-result');
+        var smallIcon = $('.search-filter__top-icons.small');
+        var largeIcon = $('.search-filter__top-icons.large');
+        var withoutIcon = $('.search-filter__top-icons.without');
+
+        smallIcon.on('click', function() {
+            divSearch.removeClass('without');
+            divSearch.removeClass('large');
+            divSearch.addClass('small');
+
+            smallIcon.addClass('active');
+            largeIcon.removeClass('active');
+            withoutIcon.removeClass('active');
+        });
+        largeIcon.on('click', function() {
+            divSearch.removeClass('without');
+            divSearch.addClass('large');
+            divSearch.removeClass('small');
+
+            smallIcon.removeClass('active');
+            largeIcon.addClass('active');
+            withoutIcon.removeClass('active');
+        });
+        withoutIcon.on('click', function() {
+            divSearch.addClass('without');
+            divSearch.removeClass('large');
+            divSearch.removeClass('small');
+
+            smallIcon.removeClass('active');
+            largeIcon.removeClass('active');
+            withoutIcon.addClass('active');
+        });
+
+        $('.country-link').on('click', function() {
+            $('body.search .content').css('border-bottom', '0px');
+            $('.search-result-items').hide();
+            $('.not-items-search').hide();
+            $('.country-link').empty();
+            $('.region-link').empty();
+            $('.city-link').empty();
+            $('.countryies').empty();
+            $('.regions').hide();
+            $('.cities').hide();
+            getCountry();
+            $('.countryies').show();
+        });
+
+        $('.country').on('click', country = function() {
+            var country = $(this).text();
+            if ($(this).data('id') == '0') {
+                complete();
+            }
+            $('.country-link').text(country);
+            $('.countryies').hide();
+            $('.regions').empty();
+            getRegion(country);
+            $('.regions').show();
+        });
+
+        $('.region').on('click', region = function() {
+            var region = $(this).text();
+            if ($(this).data('id') == '0') {
+                complete();
+            }
+            $('.region-link').text(region);
+            if ($(this).data('id') == '1') {
+                complete();
+            }
+            $('.regions').hide();
+            $('.cities').empty();
+            getCities(region);
+            $('.cities').show();
+        });
+
+        $('.city').on('click', city = function() {
+            var city = $(this).text();
+            if ($(this).data('id') == '0') {
+                complete();
+            } else {
+                $('.city-link').text(city);
+                complete();
+            }
+        });
+
+        $('.city-link').on('click', function() {
+            $('body.search .content').css('border-bottom', '0px');
+            $('.not-items-search').hide();
+            $('.search-result-items').hide();
+            $('.city-link').empty();
+            var region = $('.region-link').text();
+            $('.cities').empty();
+            getCities(region);
+            $('.cities').show();
+        });
+
+        $('.region-link').on('click', function() {
+            $('body.search .content').css('border-bottom', '0px');
+            $('.not-items-search').hide();
+            $('.search-result-items').hide();
+            $('.cities').hide();
+            $('.region-link').empty();
+            $('.city-link').empty();
+            var country = $('.country-link').text();
+            $('.regions').empty();
+            getRegion(country);
+            $('.regions').show();
+        });
+
+        function getCountry() {
+            $.ajax({
+                type: "POST",
+                url: "/location/getCountry",
+                data: {},
+                cache: false,
+                success: function(response) {
+                    $('.countryies').append($('<div/>').attr('class', 'country').attr('data-id', '0').text('Вся Беларусь').bind('click', country));
+                    $.each(response, function(key, value) {
+                        var div = $('<div/>');
+                        div.attr('class', 'country').attr('data-id', value.id).text(value.title);
+                        $('.countryies').append(div);
+                        div.bind('click', country);
+                    });
+                }
+            });
+        }
+
+        function getRegion(country) {
+            $.ajax({
+                type: "POST",
+                url: "/location/getRegionByTitle",
+                data: {"country": country},
+                cache: false,
+                success: function(response) {
+                    $('.regions').append($('<div/>').attr('class', 'region').attr('data-id', '0').text('Все области').bind('click', region));
+                    $.each(response, function(key, value) {
+                        var div = $('<div/>');
+                        div.attr('class', 'region').attr('data-id', value.id).text(value.title);
+                        $('.regions').append(div);
+                        div.bind('click', region);
+                    });
+                }
+            });
+        }
+
+        function getCities(region) {
+            $.ajax({
+                type: "POST",
+                url: "/location/getCityByTitle",
+                data: {"region": region},
+                cache: false,
+                success: function(response) {
+                    $('.cities').append($('<div/>').attr('class', 'city').attr('data-id', '0').text('Все города').bind('click', city));
+                    $.each(response, function(key, value) {
+                        var div = $('<div/>');
+                        div.attr('class', 'city').attr('data-id', value.id).text(value.title);
+                        $('.cities').append(div);
+                        div.bind('click', city);
+                    });
+                }
+            });
+        }
+
+        function complete() {
+            var country = '&country=' + $('.country-link').text();
+            var region = '&region=' + $('.region-link').text();
+            var city = '&city=' + $('.city-link').text();
+            var url = '<?= $this->cityUrl ?>' + country + region + city;
+            window.location.href = url;
+        }
+    });
+</script>

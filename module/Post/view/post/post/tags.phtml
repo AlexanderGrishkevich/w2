@@ -1,0 +1,204 @@
+<div class="post-items">
+    <?php
+    foreach ($this->posts as $post) { 
+        $images = $this->postTable->getImagesByPostId($post->id);
+        $authUserLike = $this->postTable->getLikeByPostIdAndUserId($post->id, $this->authUser);
+        ?>
+        <div class="post-item" data-post-id="<?= $post->id ?>">
+            <div class="post-item-frame "></div>
+            <div class="post-content">
+                <div class="post-item__head">
+                    <div class="post-item__head-avatar">
+                        <a href="<?php echo '/post/list/' . $post->user_id ?>">
+                            <div class="avatar" style="background-image: url('<?php echo $post->avatar ? $this->Thumb(substr($post->avatar, 6), 45, 45) : '/img/no-avatar.png' ?>')"></div>
+                        </a>
+                    </div>
+                    <div class="post-item__head-mid">
+                        <a href="<?php echo '/post/list/' . $post->user_id ?>"><div class="post-item__head-author-name"><?= $post->org_name ?></div></a>
+                        <div class="left-side">
+                            <div class="post-item__head-author-location"><?= $post->city ?></div>
+                        </div>
+                        <div class="right-side">
+                            <div class="post-item__head-chaffer"><?= $post->chaffer ? 'Договорная' : '' ?></div>
+                            <div class="post-item__head-price"><?= $post->price . ' у.е.' ?></div>
+                        </div>
+                        <a href="<?php echo '/post/details/' . $post->id ?>"><div class="post-item__head-title"><?= $post->title ?></div></a>
+                    </div>
+                    <div class="post-item__head-actions">
+                        <?php if ($this->authUser == $post->user_id) { ?>
+                            <a href="/post/edit/<?= $post->id ?>"><div class="edit-icon"></div></a>
+                            <div class="divide">|</div>
+                            <div class="refresh-icon"></div>
+                            <div class="divide">|</div>
+                            <div class="delete-icon"></div>
+                        <?php } else { ?>
+                            <a href="<?php echo '/dialog/open/' . $post->user_id ?>"><div class="chat-icon"></div></a>
+                        <?php } ?>
+                    </div>
+                    <div class="post-item__head-createDate"><?= date_format(new DateTime($post->create_date), 'd.m.y H:i') ?></div>
+                </div>
+                <div class="post-item__body">
+                    <a href="<?php echo '/post/details/' . $post->id ?>"><div class="post-item__body-text">
+                            <?php
+                            if (strlen($post->text) > 240) {
+                                $subStrPostText = mb_substr($post->text, 0, 140, 'utf-8');
+                                echo $subStrPostText . ' ... ' . "<span class='firm_blue'>полностью</span>";
+                            } else {
+                                echo $this->escapeHtml($post->text);
+                            }
+                            ?>
+                        </div></a>
+                    <div class="post-item__body-images">
+                        <?php if ($images->count() == 0) { ?>
+                            <div class="big_image" data-src="/img/358x238_none.png" style="background-image: url('/img/358x238_none.png'); border: 1px solid #dbdbdb;"></div>
+                        <?php } elseif ($images->count() == 1) { ?>
+                            <div class="big_image" data-src="<?= $images->current()->filepath ?>" style="background-image: url('<?php echo $this->Thumb($images->current()->filepath, 360, 238) ?>')"></div>
+                            <?php
+                        } else {
+                            $imagesArray = $images->toArray();
+                            ?>
+                            <div class="big_image" data-src="<?= $imagesArray[0]['filepath'] ?>" style="float: left; background-image: url('<?php echo $this->Thumb($imagesArray[0]['filepath'], 360, 238) ?>')"></div>
+                            <div class="small_images">
+                                <?php for ($i = 1; $i < $images->count(); $i++) { ?>
+                                    <div class="small_image" data-src="<?= $imagesArray[$i]['filepath'] ?>" style="background-image: url('<?php echo $this->Thumb($imagesArray[$i]['filepath'], 65, 45.5); ?>');"></div>
+                                <?php } ?>
+                            </div>
+                        <?php } ?>
+                    </div>
+                    <div class="post-item__body-replies">
+                        <div class="replice-left">
+                            <div class="post-item__body-comments">
+                                <a href="/post/details/<?= $post->id ?>"><div class="commtent-icon"></div></a>
+                                <div class="commtent-count"><?= $post->comments ?></div>
+                            </div>
+                        </div>
+                        <div class="replice-right">
+                            <div class="post-item__body-favorite <?= $post->favorite ? 'active' : '' ?>"></div>
+                            <div class="divide">|</div>
+                            <div class="post-item__body-likes">
+                                <div class="likes-icon <?= $authUserLike ? 'active' : '' ?>"></div>
+                                <div class="likes-count <?= $authUserLike ? 'firm_blue' : '' ?>"><?= $post->likes ?></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="post-item-frame"></div> 
+        </div>
+    <?php } ?>
+    <?php if (!$this->posts->count()) { ?>
+        <div class="not-items">В ленте пока нет объявлений</div>
+    <?php } ?>
+</div>
+
+<div id="links"></div>
+
+<script>
+    $(document).ready(function() {
+        $('body').on('click', '.delete', function() {
+            var item = $(this).parents('.post-item');
+            var id = $(this).parents('.post-item').data('post-id');
+
+            if (confirm("Вы действительно хотите удалить этот пост?")) {
+                $.ajax({
+                    type: "POST",
+                    url: "/post/delete",
+                    data: {"id": id},
+                    cache: false,
+                    success: function(response) {
+                        if (response && response.status === 'ok') {
+                            item.remove();
+                        }
+                    }
+                });
+            }
+        });
+
+        $('body').on('click', '.refresh', function() {
+            var id = $(this).parents('.post-item').data('post-id');
+            var date = $(this).parents('.post-item__head').find('.post-item__head-createDate');
+            $.ajax({
+                type: "POST",
+                url: "/post/refresh",
+                data: {"id": id},
+                cache: false,
+                success: function(response) {
+                    if (response && response.status === 'ok') {
+                        date.text('');
+                        setTimeout(function() {
+                            date.text(response.date)
+                        }, 500);
+                    }
+                }
+            });
+        });
+
+        $('.post-item__body-likes').on('click', function() {
+            var id = $(this).parents('.post-item').data('post-id');
+            var lc = $(this).children('.likes-count');
+            var li = $(this).children('.likes-icon');
+
+            $.ajax({
+                type: "POST",
+                url: "/like/like",
+                data: {"id": id},
+                cache: false,
+                success: function(response) {
+                    if (response && response.status === 'ok') {
+                        if (response.value) {
+                            li.addClass('active');
+                            lc.addClass('firm_blue');
+                        } else {
+                            li.removeClass('active');
+                            lc.removeClass('firm_blue');
+                        }
+                        lc.text(response.countLikes);
+                    } else {
+                        document.location.href = "/register";
+                    }
+                }
+            });
+        });
+
+        $('.post-item__body-favorite').on('click', function() {
+            var id = $(this).parents('.post-item').data('post-id');
+            var favoriteIcon = $(this);
+
+            $.ajax({
+                type: "POST",
+                url: "/favorite/favorite",
+                data: {"id": id},
+                cache: false,
+                success: function(response) {
+                    if (response && response.status === 'ok') {
+                        if (response.value) {
+                            favoriteIcon.addClass('active');
+                        } else {
+                            favoriteIcon.removeClass('active');
+                        }
+                    } else {
+                        document.location.href = "/register";
+                    }
+                }
+            });
+        });
+
+        $('body').on('click', '.big_image', function() {
+            $('#links').empty();
+            var links = $("#links");
+            links.append($('<a></a>').attr('href', $(this).data('src')));
+
+            $(this).parents('.post-item').find('.small_image').each(function(index) {
+                links.append($('<a></a>').attr('href', $(this).data('src')));
+            });
+
+            var tos = $("#links a").tosrus({
+                pagination: {
+                    add: true,
+                    type: "thumbnails"
+                }
+            });
+            tos.trigger("open");
+        });
+    });
+</script>
