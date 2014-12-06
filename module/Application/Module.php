@@ -128,6 +128,10 @@ class Module
     public function getViewHelperConfig() {
         return array(
             'factories' => array(
+                'getServiceLocator' => function($vhm) {
+                    $sm = $vhm->getServiceLocator(); // $vhm is the view helper manager, so we need to fetch the main service manager
+                    return new \Application\View\Helper\ServiceLocator($sm);
+                },
                 'UserWidget' => function ($helperPluginManager) {
                     $serviceLocator = $helperPluginManager->getServiceLocator();
                     $viewHelper = new View\Helper\UserWidget();

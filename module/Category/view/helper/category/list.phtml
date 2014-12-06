@@ -1,0 +1,55 @@
+<?php
+$sm = $this->getServiceLocator();
+$categoryTable = $sm->get('category_table');
+?>
+
+<div class="widget category-view">
+    <div class="widget-title">category list</div>
+    <div class="widget-body">
+        <a href="<?php echo $this->url('category', array('action' => 'add')); ?>">add</a>
+        <?php $p1 = $this->url('category',array('action' => 'edit')); ?>
+        <?php $p2 = $this->url('category',array('action' => 'delete')); ?>
+        <?php echoList(0, $sm, $p1, $p2); ?>
+        
+    </div>
+</div>
+
+<?php
+
+function echoList($idCat, $sm, $p1, $p2) {
+    $categoryTable = $sm->get('category_table');
+
+    if (!empty($idCat) || $idCat == '0') {
+
+        $cats = $categoryTable->getChildrenCategories($idCat);
+
+        $i = 0;
+        $more_then_one = false;
+
+        foreach ($cats as $cat) {
+
+            $i = $i + 1;
+            if ($i == 1) {
+                echo '<ul>';
+                $more_then_one = true;
+            }
+
+            $categoryId = $cat->get('category_id');
+            
+            echo '<li>';
+            echo '<span class="item">' . $cat->get('title')
+            . "<a href='$p1$categoryId'>" . ' edit' . '</a>'
+            . "<a href='$p2$categoryId'>" . ' delete' . '</a>'
+            . '</span>';
+
+            echoList($cat->get('category_id'), $sm, $p1, $p2);
+
+            echo "</li>";
+        }
+
+        if ($more_then_one) {
+            echo '</ul>';
+        }
+    }
+}
+?>

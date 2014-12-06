@@ -1,0 +1,56 @@
+<?php
+$sm = $this->getServiceLocator();
+$categoryTable = $sm->get('category_table');
+?>
+
+<div class="widget category-view">
+    <div class="widget-title">category navigate</div>
+    <div class="widget-body">
+        <?php echoList3($categories); ?>
+    </div>
+</div>
+
+<?php
+function echoList3($categories) { 
+    echo '<ul>';
+    foreach ($categories as $cat) {
+        echo "<li class='item'><a href='#'>".$cat->get('title')."</a></li>";
+    }
+    echo '</ul>';
+}
+
+function echoList2($idCat, $sm) {
+    $categoryTable = $sm->get('category_table');
+
+    if (!empty($idCat) || $idCat == '0') {
+
+        $cats = $categoryTable->getChildrenCategories($idCat);
+
+        $i = 0;
+        $more_then_one = false;
+
+        foreach ($cats as $cat) {
+
+            $i = $i + 1;
+            if ($i == 1) {
+                echo '<ul>';
+                $more_then_one = true;
+            }
+
+            $categoryId = $cat->get('category_id');
+
+            echo '<li>';
+            echo '<span class="item"><a href="">' . $cat->get('title')
+            . '</a></span>';
+
+            echoList2($cat->get('category_id'), $sm);
+
+            echo "</li>";
+        }
+
+        if ($more_then_one) {
+            echo '</ul>';
+        }
+    }
+}
+?>
